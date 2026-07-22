@@ -95,28 +95,6 @@ ScriptedImporter:
     spritePosition: {x: 0, y: 0}
   multiSpriteImportData: []
   layeredSpriteImportData:
-  - name: "Rect\xE1ngulo 1"
-    originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
-    border: {x: 0, y: 0, z: 0, w: 0}
-    customData: 
-    rect:
-      serializedVersion: 2
-      x: 211
-      y: 54
-      width: 79
-      height: 79
-    spriteID: 5c8016bbf5dbc7c40a8b71521b926f23
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 210, y: 53}
-    spritePosition: {x: 240, y: 121}
   - name: Elipse 1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
@@ -126,7 +104,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 101
-      y: 54
+      y: 104
       width: 102
       height: 102
     spriteID: 59e982fbd68dd1745b2452edde0215f2
@@ -137,7 +115,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 100, y: 53}
+    uvTransform: {x: 100, y: 102}
     spritePosition: {x: 240, y: 252}
   - name: Capa 2
     originalName: 
@@ -161,7 +139,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
     spritePosition: {x: 45, y: 126}
-  - name: Capa 1
+  - name: Capa 3
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -173,7 +151,7 @@ ScriptedImporter:
       y: 4
       width: 326
       height: 42
-    spriteID: 7816116764844fe4c840d31925512e2a
+    spriteID: deb660cf6a99f0e47a480b96466eded4
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -182,6 +160,28 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 101, y: 4}
+    spritePosition: {x: 45, y: 36}
+  - name: Capa 1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 101
+      y: 54
+      width: 326
+      height: 42
+    spriteID: 7816116764844fe4c840d31925512e2a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 101, y: 54}
     spritePosition: {x: 45, y: 36}
   spriteImportData:
   - name: 
@@ -348,15 +348,15 @@ ScriptedImporter:
     layerID: 5
     mosaicPosition: {x: 211, y: 54}
     flatten: 0
-    isImported: 1
-    isVisible: 1
+    isImported: 0
+    isVisible: 0
   - name: Elipse 1
     spriteName: Elipse 1
     isGroup: 0
     parentIndex: -1
     spriteID: 59e982fbd68dd1745b2452edde0215f2
     layerID: 4
-    mosaicPosition: {x: 101, y: 54}
+    mosaicPosition: {x: 101, y: 104}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -370,13 +370,23 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
+  - name: Capa 3
+    spriteName: Capa 3
+    isGroup: 0
+    parentIndex: -1
+    spriteID: deb660cf6a99f0e47a480b96466eded4
+    layerID: 7
+    mosaicPosition: {x: 101, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
   - name: Capa 1
     spriteName: Capa 1
     isGroup: 0
     parentIndex: -1
     spriteID: 7816116764844fe4c840d31925512e2a
     layerID: 2
-    mosaicPosition: {x: 101, y: 4}
+    mosaicPosition: {x: 101, y: 54}
     flatten: 0
     isImported: 1
     isVisible: 1

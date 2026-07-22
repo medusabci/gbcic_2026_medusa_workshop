@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: b8ed79900bc957d4fa66d67680b4e887
+guid: 47a07bc7853b1174bba7908ce82bcbba
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3191882126009140536
-    second: art_0
-  - first:
-      213: -4249202396041795333
-    second: art_1
-  - first:
-      213: -4965996818678411964
-    second: art_2
-  - first:
-      213: 341606063541959591
-    second: art_3
+      213: 3824146322478515066
+    second: hourglass_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,9 +46,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -77,11 +68,11 @@ TextureImporter:
   ignorePngGamma: 0
   applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 64
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -109,89 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: art_0
+      name: hourglass_0
       rect:
         serializedVersion: 2
-        x: 45
-        y: 126
-        width: 89
-        height: 247
+        x: 105
+        y: 41
+        width: 302
+        height: 430
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 8ca7e422e1824b3d0800000000000000
-      internalID: -3191882126009140536
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: art_1
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 252
-        width: 102
-        height: 102
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf8a03d1fecc705c0800000000000000
-      internalID: -4249202396041795333
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: art_2
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 121
-        width: 79
-        height: 79
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 44d04f2543c351bb0800000000000000
-      internalID: -4965996818678411964
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: art_3
-      rect:
-        serializedVersion: 2
-        x: 37
-        y: 29
-        width: 344
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7abb986a7e0adb400800000000000000
-      internalID: 341606063541959591
+      spriteID: a73c270b1d8121530800000000000000
+      internalID: 3824146322478515066
       vertices: []
       indices: 
       edges: []
@@ -210,10 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      art_0: -3191882126009140536
-      art_1: -4249202396041795333
-      art_2: -4965996818678411964
-      art_3: 341606063541959591
+      hourglass_0: 3824146322478515066
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
