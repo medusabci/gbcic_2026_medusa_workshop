@@ -15,6 +15,19 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+# The Unity project actually lives in unity_maze_src/, not the repo root, so the
+# root-anchored patterns above never match it — mirror them scoped to that folder.
+unity_maze_src/[Ll]ibrary/
+unity_maze_src/[Tt]emp/
+unity_maze_src/[Oo]bj/
+unity_maze_src/[Bb]uild/
+unity_maze_src/[Bb]uilds/
+unity_maze_src/[Ll]ogs/
+unity_maze_src/[Uu]ser[Ss]ettings/
+unity_maze_src/.utmp/
+unity_maze_src/[Mm]emoryCaptures/
+unity_maze_src/[Rr]ecordings/
+
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
 *.blend1
 *.blend1.meta
