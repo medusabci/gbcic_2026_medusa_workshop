@@ -33,7 +33,7 @@ public class Game : MonoBehaviour
     [Header("Cameras")]
     public CinemachineVirtualCamera cam; // player-follow vcam, temporarily disabled (see Generate)
     public Camera mainCamera; // fixed camera framing the whole maze
-    public float mazePaddingPx = 200f; // minimum empty margin, in screen pixels, between the maze and the camera edges
+    public float mazePaddingPx = 250f; // minimum empty margin, in screen pixels, between the maze and the camera edges
 
     [Header("HUD")]
     public Text levelText, timeText;
