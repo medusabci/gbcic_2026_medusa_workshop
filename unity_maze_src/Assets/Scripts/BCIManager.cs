@@ -511,6 +511,9 @@ public class Manager : MonoBehaviour
         lastResultUid = selectionUid;
         state = STATE_SELECTION_RECEIVED;
         mustShowResult = true;
+
+        if (Enum.TryParse<Direction>(selectionUid, out Direction dir))
+            gameManager.Move(dir);
     }
 
     // This function returns the current timestamp in seconds from the Unix epoch (1/1/1970)
