@@ -247,10 +247,6 @@ public class Manager : MonoBehaviour
                 {
                     GameObject cell = matrixObject.transform.Find(lastResultUid).gameObject;
                     changeItemColor(cell, highlightResultBoxColor);
-                    if (Enum.TryParse<Direction>(lastResultUid, out Direction dir))
-                    {
-                        gameManager.Move(dir);
-                    }
                 }
             }
 
@@ -329,6 +325,10 @@ public class Manager : MonoBehaviour
         {
             mustShowResult = false;
             StartCoroutine(showingResult());
+            if (Enum.TryParse<Direction>(lastResultUid, out Direction dir))
+            {
+                gameManager.Move(dir);
+            }
         }
 
         // If the run must finish
