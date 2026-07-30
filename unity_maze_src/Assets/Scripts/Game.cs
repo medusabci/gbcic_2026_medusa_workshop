@@ -1,6 +1,7 @@
 using Cinemachine;
 using System;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,6 +48,8 @@ public class Game : MonoBehaviour
         new() { backgroundColor = new Color32(0xEF, 0xE6, 0xF5, 0xFF), primaryColor = new Color32(0xF8, 0xF2, 0xFB, 0xFF), secondaryColor = new Color32(0x7A, 0x4F, 0xB0, 0xFF) },
         new() { backgroundColor = new Color32(0xF5, 0xE6, 0xE3, 0xFF), primaryColor = new Color32(0xFB, 0xF2, 0xF0, 0xFF), secondaryColor = new Color32(0xC2, 0x50, 0x3F, 0xFF) },
     };
+
+    private Vector2 lastScreenSize;
 
     int goalX, goalY;
     static readonly (int dx, int dy)[] Steps = { (-1, 0), (1, 0), (0, -1), (0, 1) };
@@ -213,8 +216,28 @@ public class Game : MonoBehaviour
         (x, y) = (nx, ny);
     }
 
+    void Awake()
+    {
+        lastScreenSize = new Vector2(Screen.width, Screen.height);
+    }
+
     void Update()
     {
+        /* MINIMUM RESOLUTION + FORCE SQUARE WINDOW */
+        // Keep the window always square: whichever axis the user just dragged (the one that
+        // differs from the last frame) becomes the new size for both axes.
+        if (Screen.width != Screen.height)
+        {
+            int newSize = Screen.width != (int)lastScreenSize.x ? Screen.width : Screen.height;
+            newSize = Mathf.Max(newSize, 450);
+            Screen.SetResolution(newSize, newSize, false);
+        }
+        else if (Screen.width < 450)
+        {
+            Screen.SetResolution(450, 450, false);
+        }
+        lastScreenSize = new Vector2(Screen.width, Screen.height);
+
         if (!Application.isPlaying) return;
 
         for (int dir = 0; dir < 4; dir++)

@@ -97,7 +97,6 @@ public class Manager : MonoBehaviour
     private int matrixSequenceLength;
 
     // Other attributes
-    private Vector2 lastScreenSize;
     static int currentTestTarget = 0;
     private MessageInterpreter messageInterpreter = new MessageInterpreter();
     private Camera mainCamera;
@@ -134,8 +133,6 @@ public class Manager : MonoBehaviour
 
     void Awake()
     {
-        lastScreenSize = new Vector2(Screen.width, Screen.height);
-
         if (!Application.isEditor)
         {
             // Take the IP and port from the arguments
@@ -210,12 +207,6 @@ public class Manager : MonoBehaviour
     void Update()
     {
         updateCount += 1;
-
-        /* MINIMUM RESOLUTION */
-        if (Screen.width < 450 || Screen.height < 450)
-        {
-            Screen.SetResolution(450, 450, false);
-        }
 
         /* BEHAVIOR FOR DIFFERENT STATES */
         // If the TCP client just connected, request the parameters
