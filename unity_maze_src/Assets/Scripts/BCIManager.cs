@@ -60,9 +60,6 @@ public class Manager : MonoBehaviour
     const int STATE_CLOSING_FINAL = 28;
     const int STATE_EVERYTHING_CLOSED = 29;
 
-    const int STATE_TRANSITION_TEXT = 30;       // states of "transitionstate" of transitionFastMode()
-    const int STATE_TRANSITION_IDDLE = 31;
-
     const int STATE_RESULT_SHOW = 50;           // states of "resultstate" of showingResult()
     const int STATE_RESULT_IDDLE = 51;
     const int STATE_RESULT_END = 52;
@@ -97,27 +94,16 @@ public class Manager : MonoBehaviour
     private int matrixSequenceLength;
 
     // Other attributes
+    private Vector2 lastScreenSize;
     static int currentTestTarget = 0;
     private MessageInterpreter messageInterpreter = new MessageInterpreter();
-    private Camera mainCamera;
-    private Canvas mainCanvas;
-    private GameObject fpsMonitorText, informationBox, informationText, debugText, mainCell, resultBox, resultText, photodiodeCell, blinkIcon;
-    private float cellSize;
-    private float width, height;
+    private GameObject fpsMonitorText, informationBox, informationText;
     private bool targetsAvailable;
     private int cycleTestCounter = 0;
     private string lastResultUid = "";
 
     // TCP client
     private MedusaTCPClient tcpClient;
-
-    // Required for raster latencies (only works for Windows)
-    [DllImport("user32.dll", EntryPoint = "FindWindow")]
-    public static extern IntPtr FindWindow(System.String className, System.String windowName);
-    [DllImport("user32.dll", EntryPoint = "GetWindowRect")]
-    public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
-    public int lastWindowLeft = 0;
-    public int lastWindowTop = 0;
 
     // Game
     public Game gameManager;
@@ -133,6 +119,8 @@ public class Manager : MonoBehaviour
 
     void Awake()
     {
+        lastScreenSize = new Vector2(Screen.width, Screen.height);
+
         if (!Application.isEditor)
         {
             // Take the IP and port from the arguments
@@ -207,6 +195,12 @@ public class Manager : MonoBehaviour
     void Update()
     {
         updateCount += 1;
+
+        /* MINIMUM RESOLUTION */
+        if (Screen.width < 450 || Screen.height < 450)
+        {
+            Screen.SetResolution(450, 450, false);
+        }
 
         /* BEHAVIOR FOR DIFFERENT STATES */
         // If the TCP client just connected, request the parameters
@@ -502,9 +496,6 @@ public class Manager : MonoBehaviour
         lastResultUid = selectionUid;
         state = STATE_SELECTION_RECEIVED;
         mustShowResult = true;
-
-        if (Enum.TryParse<Direction>(selectionUid, out Direction dir))
-            gameManager.Move(dir);
     }
 
     // This function returns the current timestamp in seconds from the Unix epoch (1/1/1970)

@@ -1,7 +1,6 @@
 using Cinemachine;
 using System;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,7 +33,8 @@ public class Game : MonoBehaviour
     [Header("Cameras")]
     public CinemachineVirtualCamera cam; // player-follow vcam, temporarily disabled (see Generate)
     public Camera mainCamera; // fixed camera framing the whole maze
-    public float mazePaddingPx = 250f; // minimum empty margin, in screen pixels, between the maze and the camera edges
+    public float maxHeightFraction = 0.6f;
+    public float maxWidthFraction = 0.6f;
 
     [Header("HUD")]
     public Text levelText, timeText;
@@ -48,8 +48,6 @@ public class Game : MonoBehaviour
         new() { backgroundColor = new Color32(0xEF, 0xE6, 0xF5, 0xFF), primaryColor = new Color32(0xF8, 0xF2, 0xFB, 0xFF), secondaryColor = new Color32(0x7A, 0x4F, 0xB0, 0xFF) },
         new() { backgroundColor = new Color32(0xF5, 0xE6, 0xE3, 0xFF), primaryColor = new Color32(0xFB, 0xF2, 0xF0, 0xFF), secondaryColor = new Color32(0xC2, 0x50, 0x3F, 0xFF) },
     };
-
-    private Vector2 lastScreenSize;
 
     int goalX, goalY;
     static readonly (int dx, int dy)[] Steps = { (-1, 0), (1, 0), (0, -1), (0, 1) };
@@ -145,24 +143,22 @@ public class Game : MonoBehaviour
 
     void OnValidate() => ApplyColors();
 
-    // Fixed camera centered on the current maze, zoomed so the maze keeps at least
-    // mazePaddingPx of empty margin on screen regardless of its current w/h.
+    // Fixed camera centered on the current maze, zoomed so the maze occupies at most
+    // maxHeightFraction of the visible height and maxWidthFraction of the visible width.
     void FrameMaze()
     {
         if (!mainCamera) return;
         mainCamera.transform.position = new Vector3((w - 1) / 2f, (h - 1) / 2f, -10f);
 
-        // Fallback to a 1920x1080 reference if the camera has no render target yet (e.g. Game view never opened).
-        float screenW = mainCamera.pixelWidth > 0 ? mainCamera.pixelWidth : 1920f;
-        float screenH = mainCamera.pixelHeight > 0 ? mainCamera.pixelHeight : 1080f;
+        float aspect = mainCamera.aspect;
 
         // orthographicSize is half the vertical world height shown on screen, so pixels-per-world-unit
-        // is screenH / (2 * orthographicSize). Solving "maze size in pixels + 2*padding = screen size"
-        // for orthographicSize on each axis, then taking the larger (more zoomed out) one, guarantees
-        // at least mazePaddingPx of margin on whichever axis is tightest.
-        float vertical = h * screenH / (2f * Mathf.Max(screenH - 2f * mazePaddingPx, 1f));
-        float horizontal = w * screenH / (2f * Mathf.Max(screenW - 2f * mazePaddingPx, 1f));
-        mainCamera.orthographicSize = Mathf.Max(vertical, horizontal);
+        float sizeByHeight = h / (2f * maxHeightFraction);
+
+        float visibleWidth = w / maxWidthFraction;
+        float sizeByWidth = visibleWidth / (2f * aspect);
+
+        mainCamera.orthographicSize = Mathf.Max(sizeByHeight, sizeByWidth);
     }
 
     // Single tiled sprite covering the whole maze rectangle, instead of one tile per cell:
@@ -216,28 +212,8 @@ public class Game : MonoBehaviour
         (x, y) = (nx, ny);
     }
 
-    void Awake()
-    {
-        lastScreenSize = new Vector2(Screen.width, Screen.height);
-    }
-
     void Update()
     {
-        /* MINIMUM RESOLUTION + FORCE SQUARE WINDOW */
-        // Keep the window always square: whichever axis the user just dragged (the one that
-        // differs from the last frame) becomes the new size for both axes.
-        if (Screen.width != Screen.height)
-        {
-            int newSize = Screen.width != (int)lastScreenSize.x ? Screen.width : Screen.height;
-            newSize = Mathf.Max(newSize, 450);
-            Screen.SetResolution(newSize, newSize, false);
-        }
-        else if (Screen.width < 450)
-        {
-            Screen.SetResolution(450, 450, false);
-        }
-        lastScreenSize = new Vector2(Screen.width, Screen.height);
-
         if (!Application.isPlaying) return;
 
         for (int dir = 0; dir < 4; dir++)
