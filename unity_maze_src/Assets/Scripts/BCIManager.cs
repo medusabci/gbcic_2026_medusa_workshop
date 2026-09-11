@@ -24,7 +24,6 @@ public class Manager : MonoBehaviour
     public float fpsResolution = 60;    // Screen refresh rate (frequency bin, resolution) in Hz
     public int nCmmds = 4;
     public int testCycles = 1;
-    private List<string> testTarget;
 
     public float tPrevText = 1.00f;
     public float tPrevIddle = 1.00f;
@@ -37,7 +36,6 @@ public class Manager : MonoBehaviour
     const int RUN_STATE_RUNNING = 1;         // RUNNING
     const int RUN_STATE_PAUSED = 2;          // PAUSED
     const int RUN_STATE_STOP = 3;            // TRANSITORY STATE WHILE USER PRESS THE STOP BUTTON AND MEDUSA IS READY TO START A NEW RUN AGAIN
-    const int RUN_STATE_FINISHED = 4;        // THE RUN IS STILL ACTIVE, BUT FINISHED
 
     // Inner states
     const int STATE_WAITING_CONNECTION = -2;    // states of "state"
@@ -45,16 +43,10 @@ public class Manager : MonoBehaviour
 
     const int STATE_WAITING_SELECTION = 18;
     const int STATE_SELECTION_RECEIVED = 19;
-    const int STATE_SELECTION_IDDLE = 20;
 
     const int STATE_RUNNING_PREVTEXT = 10;      // states of "innerstate" of innerRunningCycle()
     const int STATE_RUNNING_IDDLE = 11;
-    const int STATE_RUNNING_TARGET = 12;
-    const int STATE_RUNNING_IDDLE2 = 13;
     const int STATE_RUNNING_FLICKERING = 14;
-
-    const int STATE_FINISHING_IDDLE = 25;       // states of "finishingstate" of finishingCycle()
-    const int STATE_FINISHING_TEXT = 26;
 
     const int STATE_CLOSING_TEXT = 27;          // states of "closingstate" of closingApplication()
     const int STATE_CLOSING_FINAL = 28;
@@ -67,18 +59,15 @@ public class Manager : MonoBehaviour
     // State controllers and coroutines
     static int state = STATE_WAITING_CONNECTION;
     static int innerstate = STATE_RUNNING_PREVTEXT;
-    static int finishingstate = STATE_FINISHING_IDDLE;
     static int closingstate = STATE_CLOSING_TEXT;
     static int resultstate = STATE_RESULT_SHOW;
     static bool mustStartTrial = false;
-    static bool mustFinishRun = false;
     static bool mustClose = false;
     static bool mustShowResult = false;
 
     // Colors
     public Color32 defaultBoxColor = Color.gray;
     public Color32 highlightResultBoxColor = Color.green;
-
 
     // FPS counter
     private float updateCount = 0;
@@ -95,11 +84,10 @@ public class Manager : MonoBehaviour
 
     // Other attributes
     private Vector2 lastScreenSize;
-    static int currentTestTarget = 0;
     private MessageInterpreter messageInterpreter = new MessageInterpreter();
     private GameObject fpsMonitorText, informationBox, informationText;
-    private bool targetsAvailable;
     private int cycleTestCounter = 0;
+    private int currentTestTrial = 0;
     private string lastResultUid = "";
 
     // TCP client
@@ -149,7 +137,6 @@ public class Manager : MonoBehaviour
         // Information text and box
         informationBox = GameObject.Find("InformationBox");
         informationText = GameObject.Find("InformationText");
-
 
         // WAIT until parameters are received!
         state = STATE_WAITING_CONNECTION;
@@ -244,42 +231,16 @@ public class Manager : MonoBehaviour
 
             if (resultstate == STATE_RESULT_END)
             {
-                // Start another trial?
-                if (targetsAvailable)
-                {
-                    if (currentTestTarget >= testTarget.Count)
-                    {
-                        // If all the targets have been done, notify the server to finish the app
-                        mustFinishRun = true;
-                        state = RUN_STATE_FINISHED;
-                    }
-                }
-                if (state != RUN_STATE_FINISHED)
-                {
-                    // Starting another trial
-                    state = RUN_STATE_RUNNING;
-                    innerstate = STATE_RUNNING_IDDLE;
-                    mustStartTrial = true;
-                }
+                // Starting another trial
+                state = RUN_STATE_RUNNING;
+                innerstate = STATE_RUNNING_IDDLE;
+                mustStartTrial = true;
 
                 // Reset result
                 lastResultUid = "";
                 resultstate = STATE_RESULT_SHOW;
             }
 
-        }
-
-        // If the run is finished
-        if (state == RUN_STATE_FINISHED)
-        {
-            if (finishingstate == STATE_FINISHING_IDDLE)
-            {
-                setInformationText("");
-            }
-            if (finishingstate == STATE_FINISHING_TEXT)
-            {
-                setInformationText("Run finished");
-            }
         }
 
         // If the Unity app is stopping (closing)
@@ -314,14 +275,6 @@ public class Manager : MonoBehaviour
             {
                 gameManager.Move(dir);
             }
-        }
-
-        // If the run must finish
-        if (mustFinishRun)
-        {
-            // Show the finished text and notify
-            mustFinishRun = false;
-            StartCoroutine(finishingCycle());
         }
 
         // If the TCPServer must close
@@ -535,7 +488,7 @@ public class Manager : MonoBehaviour
                     double currentTime = getCurrentTimeStamp();
                     ServerMessage sm = new ServerMessage("test");
                     sm.addValue("onset", currentTime);
-                    sm.addValue("trial", currentTestTarget);
+                    sm.addValue("trial", currentTestTrial);
                     sm.addValue("matrix_idx", 0);
                     sm.addValue("level_idx", 0);
                     sm.addValue("unit_idx", 0);
@@ -550,7 +503,7 @@ public class Manager : MonoBehaviour
             if (cycleTestCounter > testCycles)
             {
                 cycleTestCounter = 0;
-                currentTestTarget++;
+                currentTestTrial++;
                 resetMatrix();
 
                 // Request MEDUSA to process the trial
@@ -626,22 +579,6 @@ public class Manager : MonoBehaviour
         }
     }
 
-    // This thread controls the timings of the finished run
-    IEnumerator finishingCycle()
-    {
-        Debug.Log("Finishing...");
-        finishingstate = STATE_FINISHING_IDDLE;
-        yield return new WaitForSeconds((float)tPrevIddle);
-
-        finishingstate = STATE_FINISHING_TEXT;
-        yield return new WaitForSeconds((float)tFinishText);
-
-        // Send the confirmation that the Unity's client has finished the execution
-        // NOTE: we have waited the test to show to assure that enough samples after the last onset have been recorded in the MANAGER of MEDUSA
-        ServerMessage sm = new ServerMessage("finish");
-        tcpClient.SendMessage(sm.ToJson());
-    }
-
     // This thread controls the timings for closing the application.
     IEnumerator closingApplication()
     {
@@ -663,15 +600,6 @@ public class Manager : MonoBehaviour
 
         resultstate = STATE_RESULT_END;
         Debug.Log("Showing result finished...");
-    }
-
-/* ------------------------------------------- RASTER LATENCIES UTILS ------------------------------------------- */
-    public struct Rect
-    {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Right { get; set; }
-        public int Bottom { get; set; }
     }
 
 }
